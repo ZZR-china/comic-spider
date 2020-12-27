@@ -5,20 +5,11 @@ Created on Sun May 12 12:28:03 2019
 @author: Ziyuan
 """
 #导入必要的模块
-import time
-import random
 import requests
 from bs4 import BeautifulSoup as BS
 import os
 import sys
 
-
-from requests.adapters import HTTPAdapter
-ress = requests.Session()
-
-# max_retries 为最大重试次数，重试3次，加上最初的一次请求，一共是4次，所以上述代码运行耗时是20秒而不是15秒
-ress.mount('http://', HTTPAdapter(max_retries=3))
-ress.mount('https://', HTTPAdapter(max_retries=3))
 
 headers={"User-Agent" : "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.1.6) ",
   "Accept" : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -36,27 +27,19 @@ class ImageCrawl(object):
             print('该文件已下载')
             pass
         else:
-            try:
-                r = ress.get(url,stream=True,timeout=5)
-                # 每访问一次，休眠几秒
-                randomTime = random.randint(3,10)
-                print('休眠时长：', randomTime)
-                time.sleep(randomTime)
-               
-                with open(picname,"wb") as f:
-                    for image in r.iter_content(chunk_size=1024):
-                        if image:
-                            f.write(image)
-                            f.flush
-            except requests.exceptions.RequestException as e:
-                print(e)
+            r = requests.get(url,stream=True)
+            with open(picname,"wb") as f:
+                for image in r.iter_content(chunk_size=1024):
+                    if image:
+                        f.write(image)
+                        f.flush
 
                         
     def getImage(self, url):
         # url = 'https://zhb.doghentai.com/g/341161/list2/'
         # url = url
         
-        html = requests.get(url, timeout=10, headers=headers).text
+        html = requests.get(url, timeout=10000, headers=headers).text
         soup = BS(html,'lxml')
 
         allImg = soup.find_all('img',class_='list-img')
@@ -67,9 +50,7 @@ class ImageCrawl(object):
         fileName = alt1.replace(" - Picture 1", "", 1)
         fileName = fileName.replace("/", " ", 1)
 
-        fileName = os.path.join('pictrues', fileName)
-
-        print('文件夹名：', fileName)
+        print(fileName)
 
         for img in allImg:
             attrs = img.attrs
