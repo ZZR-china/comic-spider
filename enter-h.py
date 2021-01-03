@@ -39,7 +39,7 @@ class ImageCrawl(object):
             try:
                 r = ress.get(url,stream=True,timeout=5)
                 # 每访问一次，休眠几秒
-                randomTime = random.randint(3,10)
+                randomTime = random.randint(2,8)
                 print('休眠时长：', randomTime)
                 time.sleep(randomTime)
                
@@ -56,7 +56,7 @@ class ImageCrawl(object):
         # url = 'https://zhb.doghentai.com/g/341161/list2/'
         # url = url
         
-        html = requests.get(url, timeout=10, headers=headers).text
+        html = ress.get(url, timeout=5, headers=headers).text
         soup = BS(html,'lxml')
 
         allImg = soup.find_all('img',class_='list-img')
