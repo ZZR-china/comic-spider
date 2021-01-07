@@ -11,6 +11,7 @@ import requests
 from bs4 import BeautifulSoup as BS
 import os
 import sys
+import re
 
 
 from requests.adapters import HTTPAdapter
@@ -68,6 +69,11 @@ class ImageCrawl(object):
         fileName = fileName.replace("/", " ", 1)
 
         fileName = os.path.join('pictrues', fileName)
+        # 去除特殊字符
+        fileName = re.sub('[!@#$]\/:*?"<>|', '', fileName)
+        # 非空判断
+        if fileName.strip()=='':
+            fileName = time.strftime('%Y-%m-%d-%H:%M:%S',time.localtime(time.time())) + '-' + str(randomTime)
 
         print('文件夹名：', fileName)
 

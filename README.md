@@ -34,3 +34,5 @@ wheel          0.34.2
 
 WARNING: You are using pip version 20.1.1; however, version 20.3.3 is available.
 You should consider upgrading via the 'C:\Users\Lenovo\Envs\spiderh\Scripts\python.exe -m pip install --upgrade pip' command.
+
+pip install robotframework==2.8.7
