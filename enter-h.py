@@ -89,10 +89,13 @@ class ImageCrawl(object):
                 picname = os.path.join(fileName, dataSrc.split('/')[-1])
                 print(picname)
                 self.download(dataSrc,fileName,picname)
+        
                 
                 
 if __name__=="__main__":
     url = input("请输入url：")
     # print(url)
     craw = ImageCrawl()
+    # 运行两次
+    craw.getImage(url)
     craw.getImage(url)
