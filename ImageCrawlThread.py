@@ -12,10 +12,10 @@ from bs4 import BeautifulSoup as BS
 import os
 import sys
 import re
-# import threading
+import threading
 from requests.adapters import HTTPAdapter
 
-# thread_max_num = threading.Semaphore(30)
+thread_max_num = threading.Semaphore(5)
 ress = requests.Session()
 
 # max_retries 为最大重试次数，重试3次，加上最初的一次请求，一共是4次，所以上述代码运行耗时是20秒而不是15秒
@@ -43,7 +43,7 @@ class ImageCrawl(object):
             try:
                 r = ress.get(url,stream=True,timeout=5,proxies=proxies)
                 # 每访问一次，休眠几秒
-                randomTime = random.randint(2,3)
+                randomTime = random.randint(2,4)
                 print('休眠时长：', randomTime)
                 time.sleep(randomTime)
                
@@ -78,20 +78,19 @@ class ImageCrawl(object):
             fileName = time.strftime('%Y-%m-%d-%H:%M:%S',time.localtime(time.time())) + '-' + str(randomTime)
 
         print('文件夹名：', fileName)
-
-        # with thread_max_num:
         allLen = len(allImg)
-        for img in allImg:
-            attrs = img.attrs
-            dataSrc = attrs['src']
-            # 获取文件后缀，如果是svg则不下载
-            filestr = dataSrc.split('.')[-1]
-            if filestr == 'svg':
-                pass
-            else:
-                picname = os.path.join(fileName, dataSrc.split('/')[-1])
-                print(picname, '===共',allLen,'张')
-                self.download(dataSrc,fileName,picname)
-                # th = threading.Thread(target = self.download, args=(dataSrc,fileName,picname))
-                # th.start()
+
+        with thread_max_num:
+            for img in allImg:
+                attrs = img.attrs
+                dataSrc = attrs['src']
+                # 获取文件后缀，如果是svg则不下载
+                filestr = dataSrc.split('.')[-1]
+                if filestr == 'svg':
+                    pass
+                else:
+                    picname = os.path.join(fileName, dataSrc.split('/')[-1])
+                    print(picname, '===共',allLen,'张')
+                    th = threading.Thread(target = self.download, args=(dataSrc,fileName,picname))
+                    th.start()
         
