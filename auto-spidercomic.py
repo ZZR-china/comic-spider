@@ -27,7 +27,8 @@ if __name__=="__main__":
     urls = [x for x in urls if x != '']
     print(urls)
 
-    if len(urls):
+    if len(urls) == 0:
+        logging.warning('urls为空！')
         sys.exit()
 
     for url in urls:

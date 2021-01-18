@@ -46,17 +46,21 @@ class ImageCrawl(object):
                 randomTime = random.randint(2,3)
                 time.sleep(randomTime)
                 if r.status_code == 404:
-                    print('图片不存在，启用备用url')
-                    backUpUrlFilestr = backUpUrl.split('.')[-1]
-                    if backUpUrlFilestr == 'svg':
+                    # print('图片不存在，启用备用url')
+                    if os.path.exists(backUpPicname):
+                        # print('该文件已下载')
                         pass
                     else:
-                        rb = ress.get(backUpUrl,stream=True,timeout=5,proxies=proxies)
-                        with open(backUpPicname,"wb") as f:
-                            for image in rb.iter_content(chunk_size=1024):
-                                if image:
-                                    f.write(image)
-                                    f.flush
+                        backUpUrlFilestr = backUpUrl.split('.')[-1]
+                        if backUpUrlFilestr == 'svg':
+                            pass
+                        else:
+                            rb = ress.get(backUpUrl,stream=True,timeout=5,proxies=proxies)
+                            with open(backUpPicname,"wb") as f:
+                                for image in rb.iter_content(chunk_size=1024):
+                                    if image:
+                                        f.write(image)
+                                        f.flush
                 else:
                     with open(picname,"wb") as f:
                         for image in r.iter_content(chunk_size=1024):
