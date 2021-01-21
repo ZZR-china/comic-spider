@@ -90,14 +90,14 @@ class ImageCrawl(object):
         alt1 = attrs1['alt']
         fileName = alt1.replace(" - Picture 1", "", 1)
         fileName = fileName.replace("/", " ", 1)
-        fileName = os.path.join('pictrues', fileName)
-        # 去除特殊字符
         fileName = re.sub('[!@#$]\/:*?"<>|', '', fileName)
-        # 非空判断
+    
         if fileName.strip() == '':
             randomTime = random.randint(1,3)
-            fileName = time.strftime('%Y-%m-%d-%H:%M:%S',time.localtime(time.time())) + '-' + str(randomTime)
+            fileName = time.strftime('%Y-%m-%d',time.localtime(time.time())) + '-' + str(randomTime)
 
+        fileName = os.path.join('pictrues', fileName)
+        # print(fileName)
 
         allLen = len(allImg) / 2
         print('文件夹名：', fileName, '共：', allLen, '张')
